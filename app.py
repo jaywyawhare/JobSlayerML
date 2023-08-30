@@ -6,7 +6,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score, roc_auc_score, f1_score, recall_score
 from sklearn.impute import SimpleImputer
 
-# Create a boolean variable to track if the submit button is clicked
 submit_clicked = False
 
 def load_data():
@@ -42,9 +41,9 @@ def perform_classification(X_train, y_train, X_test, y_test, selected_model):
     return model, accuracy, roc_auc, f1, recall
 
 def main():
-    global submit_clicked  # Use the global variable to track the submit button state
+    global submit_clicked 
     
-    st.title("AutoML: Automated Machine Learning")
+    st.title("JobSlayerML : Who needs job security?")
 
     df = load_data()
 
@@ -78,9 +77,8 @@ def main():
     st.sidebar.header("Choose a Model")
     model_selector = st.sidebar.selectbox("Select a model:", sorted([name for name, _ in all_estimators(type_filter=['regressor' if task == 'Regression' else 'classifier'])]))
     
-    # Add a submit button to trigger the model computation
     if st.sidebar.button("Submit"):
-        submit_clicked = True  # Set the submit button state to True
+        submit_clicked = True 
 
         selected_model = [est for name, est in all_estimators(type_filter=['regressor' if task == 'Regression' else 'classifier']) if name == model_selector][0]
 
