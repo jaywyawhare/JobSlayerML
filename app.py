@@ -3,9 +3,11 @@ import pandas as pd
 import numpy as np
 from sklearn.utils import all_estimators
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, accuracy_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score, roc_auc_score, f1_score, recall_score
 from sklearn.impute import SimpleImputer
-from collections import defaultdict
+
+# Create a boolean variable to track if the submit button is clicked
+submit_clicked = False
 
 def load_data():
     uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
@@ -25,22 +27,32 @@ def perform_regression(X_train, y_train, X_test, y_test, selected_model):
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
-    return model, mse
+    mae = mean_absolute_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    return model, mse, mae, r2
 
 def perform_classification(X_train, y_train, X_test, y_test, selected_model):
     model = selected_model()
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
-    return model, accuracy
+    roc_auc = roc_auc_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    return model, accuracy, roc_auc, f1, recall
 
 def main():
+    global submit_clicked  # Use the global variable to track the submit button state
+    
     st.title("AutoML: Automated Machine Learning")
 
     df = load_data()
 
     if df is None:
         return
+
+    st.header("Data")
+    st.write(df)
 
     st.sidebar.header("Data Preprocessing Options")
     fillna_option = st.sidebar.radio("Fill NaN with:", ("Mean", "Mode", "0"))
@@ -65,24 +77,32 @@ def main():
 
     st.sidebar.header("Choose a Model")
     model_selector = st.sidebar.selectbox("Select a model:", sorted([name for name, _ in all_estimators(type_filter=['regressor' if task == 'Regression' else 'classifier'])]))
-    selected_model = [est for name, est in all_estimators(type_filter=['regressor' if task == 'Regression' else 'classifier']) if name == model_selector][0]
+    
+    # Add a submit button to trigger the model computation
+    if st.sidebar.button("Submit"):
+        submit_clicked = True  # Set the submit button state to True
 
-    if task == "Regression":
-        st.header("Regression Task")
-        st.write(f"Selected Model: {model_selector}")
+        selected_model = [est for name, est in all_estimators(type_filter=['regressor' if task == 'Regression' else 'classifier']) if name == model_selector][0]
 
-        model, mse = perform_regression(X_train, y_train, X_test, y_test, selected_model)
-        st.write(f"Mean Squared Error: {mse}")
+        if task == "Regression":
+            st.header("Regression Task")
+            st.write(f"Selected Model: {model_selector}")
 
-    elif task == "Classification":
-        st.header("Classification Task")
-        st.write(f"Selected Model: {model_selector}")
+            model, mse, mae, r2 = perform_regression(X_train, y_train, X_test, y_test, selected_model)
+            st.write(f"Mean Squared Error: {mse}")
+            st.write(f"Mean Absolute Error: {mae}")
+            st.write(f"R-squared (R2): {r2}")
 
-        model, accuracy = perform_classification(X_train, y_train, X_test, y_test, selected_model)
-        st.write(f"Accuracy: {accuracy}")
+        elif task == "Classification":
+            st.header("Classification Task")
+            st.write(f"Selected Model: {model_selector}")
 
-    st.subheader("Best Model")
-    st.write("The best model for the dataset is:", model_selector)
+            model, accuracy, roc_auc, f1, recall = perform_classification(X_train, y_train, X_test, y_test, selected_model)
+            st.write(f"Accuracy: {accuracy}")
+            st.write(f"ROC AUC: {roc_auc}")
+            st.write(f"F1 Score: {f1}")
+            st.write(f"Recall: {recall}")
+
 
 if __name__ == "__main__":
     main()
