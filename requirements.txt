@@ -6,3 +6,7 @@ seaborn
 scikit-learn
 pytest
 plotly
+xgboost
+catboost
+lightgbm
+category-encoders
