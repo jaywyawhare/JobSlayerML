@@ -57,8 +57,6 @@ def data_scaling(df, scaling_option, scaling_columns):
 
 def train_test_validation_split(df, target_column, test_size, random_state):
     df = pd.DataFrame(df)
-    st.write(df.columns)
-    st.write(df)
     X = df.drop(columns=[target_column])
     y = df[target_column]
     X_train, X_test, y_train, y_test = train_test_split(
