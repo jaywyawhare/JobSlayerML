@@ -3,13 +3,6 @@ from src.models import models, eval, training
 from src.plot_generator import (
     generate_regression_plots,
     generate_confusion_matrix,
-    generate_heatmap,
-    generate_scatter_matrix,
-    generate_boxplot,
-    generate_histogram,
-    generate_barplot,
-    generate_countplot,
-    generate_violinplot,
 )
 from src.preprocessing import (
     drop_columns,
@@ -17,7 +10,6 @@ from src.preprocessing import (
     encode_categorical,
     data_scaling,
     train_test_validation_split,
-    label_encode,
 )
 
 import pandas as pd
@@ -65,6 +57,7 @@ def main():
                 "Select the model", [name for name, model in models(model_type)]
             )
 
+
         if model_type == "Regression":
             eval_metrics = st.sidebar.multiselect(
                 "Select the evaluation metrics",
@@ -87,7 +80,7 @@ def main():
         else:
             eval_metrics = st.sidebar.multiselect(
                 "Select the evaluation metrics",
-                ["Accuracy", "Precision", "Recall", "F1", "F2", "AUC", "ROC"],
+                ["Accuracy", "Precision", "Recall", "F1", "AUC",],
             )
         comparison_metrics = st.sidebar.selectbox(
             "Select the comparison metric", eval_metrics
@@ -113,35 +106,36 @@ def main():
         scaling_columns = st.sidebar.multiselect(
             "Select the columns to scale", df.columns
         )
-        st.sidebar.subheader("Specify Plot Options")
-        if model_type == "Regression":
-            plot_options = [
-                "Regression Plot",
-                "Scatter Matrix",
-                "Box Plot",
-                "Histogram",
-            ]
-        else:
-            plot_options = [
-                "Confusion Matrix",
-                "Heatmap",
-                "Scatter Matrix",
-                "Box Plot",
-                "Histogram",
-                "Bar Plot",
-                "Count Plot",
-                "Violin Plot",
-            ]
-        plot_selector = st.sidebar.multiselect(
-            "Select the plots to generate", plot_options
-        )
+
+
+        if not comparative_analysis:
+            st.sidebar.subheader("Specify Plot Options")
+            if model_type == "Regression":
+                plot_options = [
+                    "Regression Plot",
+                    "Scatter Matrix",
+                    "Box Plot",
+                    "Histogram",
+                ]
+            else:
+                plot_options = [
+                    "Confusion Matrix",
+                    "Heatmap",
+                    "Scatter Matrix",
+                    "Box Plot",
+                    "Histogram",
+                    "Bar Plot",
+                    "Count Plot",
+                    "Violin Plot",
+                ]
+            plot_selector = st.sidebar.multiselect(
+                "Select the plots to generate", plot_options
+            )
 
         submit_clicked = st.sidebar.button("Submit")
 
         if not submit_clicked:
             return None
-        else:
-            st.write("Running the app...")
 
         df = drop_columns(df, columns_to_drop)
         df = pd.DataFrame(df)
@@ -151,35 +145,36 @@ def main():
         X_train, X_test, y_train, y_test = train_test_validation_split(
             df, target_column, test_size, random_state
         )
-        y_test, y_pred, best_model = training(
-            model_type,
-            model_selector,
-            X_train,
-            y_train,
-            X_test,
-            y_test,
-            eval_metrics,
-            comparison_metrics,
-        )
 
-        if "Regression Plot" in plot_selector:
-            generate_regression_plots(X_train, X_test, y_train, y_test, best_model)
-        if "Confusion Matrix" in plot_selector:
-            generate_confusion_matrix(y_test, y_pred)
-        if "Heatmap" in plot_selector:
-            generate_heatmap(df)
-        if "Scatter Matrix" in plot_selector:
-            generate_scatter_matrix(df)
-        if "Box Plot" in plot_selector:
-            generate_boxplot(df)
-        if "Histogram" in plot_selector:
-            generate_histogram(df)
-        if "Bar Plot" in plot_selector:
-            generate_barplot(df)
-        if "Count Plot" in plot_selector:
-            generate_countplot(df)
-        if "Violin Plot" in plot_selector:
-            generate_violinplot(df)
+
+        if model_selector == "Comparative Analysis":
+            training(
+                model_type,
+                model_selector,
+                X_train,
+                y_train,
+                X_test,
+                y_test,
+                eval_metrics,
+                comparison_metrics,
+            )
+        else:
+            y_test, y_pred, best_model = training(
+                model_type,
+                model_selector,
+                X_train,
+                y_train,
+                X_test,
+                y_test,
+                eval_metrics,
+                comparison_metrics,
+            )
+
+            if "Regression Plot" in plot_selector:
+                generate_regression_plots(X_train, X_test, y_train, y_test, best_model)
+            if "Confusion Matrix" in plot_selector:
+                generate_confusion_matrix(y_test, y_pred)
+            
 
 
 if __name__ == "__main__":
