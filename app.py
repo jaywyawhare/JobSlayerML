@@ -3,10 +3,19 @@ import pandas as pd
 import numpy as np
 from sklearn.utils import all_estimators
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score, roc_auc_score, f1_score, recall_score
+from sklearn.metrics import (
+    mean_squared_error,
+    mean_absolute_error,
+    r2_score,
+    accuracy_score,
+    roc_auc_score,
+    f1_score,
+    recall_score,
+)
 from sklearn.impute import SimpleImputer
 
 submit_clicked = False
+
 
 def load_data():
     uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
@@ -21,6 +30,7 @@ def load_data():
     else:
         return None
 
+
 def perform_regression(X_train, y_train, X_test, y_test, selected_model):
     model = selected_model()
     model.fit(X_train, y_train)
@@ -29,6 +39,7 @@ def perform_regression(X_train, y_train, X_test, y_test, selected_model):
     mae = mean_absolute_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
     return model, mse, mae, r2
+
 
 def perform_classification(X_train, y_train, X_test, y_test, selected_model):
     model = selected_model()
@@ -40,9 +51,10 @@ def perform_classification(X_train, y_train, X_test, y_test, selected_model):
     recall = recall_score(y_test, y_pred)
     return model, accuracy, roc_auc, f1, recall
 
+
 def main():
-    global submit_clicked 
-    
+    global submit_clicked
+
     st.title("JobSlayerML : Who needs job security?")
 
     df = load_data()
@@ -72,21 +84,41 @@ def main():
     X = df.drop(columns=[target_column])
     y = df[target_column]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
     st.sidebar.header("Choose a Model")
-    model_selector = st.sidebar.selectbox("Select a model:", sorted([name for name, _ in all_estimators(type_filter=['regressor' if task == 'Regression' else 'classifier'])]))
-    
-    if st.sidebar.button("Submit"):
-        submit_clicked = True 
+    model_selector = st.sidebar.selectbox(
+        "Select a model:",
+        sorted(
+            [
+                name
+                for name, _ in all_estimators(
+                    type_filter=["regressor" if task == "Regression" else "classifier"]
+                )
+            ]
+        ),
+    )
 
-        selected_model = [est for name, est in all_estimators(type_filter=['regressor' if task == 'Regression' else 'classifier']) if name == model_selector][0]
+    if st.sidebar.button("Submit"):
+        submit_clicked = True
+
+        selected_model = [
+            est
+            for name, est in all_estimators(
+                type_filter=["regressor" if task == "Regression" else "classifier"]
+            )
+            if name == model_selector
+        ][0]
 
         if task == "Regression":
             st.header("Regression Task")
             st.write(f"Selected Model: {model_selector}")
 
-            model, mse, mae, r2 = perform_regression(X_train, y_train, X_test, y_test, selected_model)
+            model, mse, mae, r2 = perform_regression(
+                X_train, y_train, X_test, y_test, selected_model
+            )
             st.write(f"Mean Squared Error: {mse}")
             st.write(f"Mean Absolute Error: {mae}")
             st.write(f"R-squared (R2): {r2}")
@@ -95,7 +127,9 @@ def main():
             st.header("Classification Task")
             st.write(f"Selected Model: {model_selector}")
 
-            model, accuracy, roc_auc, f1, recall = perform_classification(X_train, y_train, X_test, y_test, selected_model)
+            model, accuracy, roc_auc, f1, recall = perform_classification(
+                X_train, y_train, X_test, y_test, selected_model
+            )
             st.write(f"Accuracy: {accuracy}")
             st.write(f"ROC AUC: {roc_auc}")
             st.write(f"F1 Score: {f1}")
