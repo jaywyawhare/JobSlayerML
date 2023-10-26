@@ -9,4 +9,5 @@ plotly
 xgboost
 catboost
 lightgbm
+umap-learn
 category-encoders
