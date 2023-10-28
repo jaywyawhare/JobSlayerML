@@ -13,3 +13,4 @@ umap-learn
 category-encoders
 coverage
 pytest
+coveralls
