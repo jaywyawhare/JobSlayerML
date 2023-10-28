@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix, auc, roc_curve
 
 
+@st.cache_data
 def generate_heatmap(df):
     """
     Function to generate a heatmap for the correlation matrix of the dataframe.
@@ -34,6 +35,7 @@ def generate_heatmap(df):
     st.plotly_chart(fig)
 
 
+@st.cache_data
 def generate_distribution_plot(df):
     """
     Function to generate a distribution plot for the dataframe.
@@ -56,13 +58,14 @@ def generate_distribution_plot(df):
     st.plotly_chart(fig)
 
 
+@st.cache_data
 def generate_pca_plot(df, target_column):
     """
     Function to generate a PCA plot, with the target column. (Cummulative Variance Explained vs Number of Components)
 
     Args:
         df: The dataframe to generate the PCA plot for.
-        target_column: The target column.   
+        target_column: The target column.
 
     Returns:
         None
@@ -94,6 +97,7 @@ def generate_pca_plot(df, target_column):
     st.plotly_chart(fig, use_container_width=True)
 
 
+@st.cache_data
 def generate_2d_tsne(df, target_column):
     """
     Function to generate a 2D TSNE plot, with the target column.
@@ -120,6 +124,7 @@ def generate_2d_tsne(df, target_column):
     st.plotly_chart(fig, use_container_width=True)
 
 
+@st.cache_data
 def generate_2d_umap(df, target_column):
     """
     Function to generate a 2D UMAP plot, with the target column.
@@ -146,6 +151,7 @@ def generate_2d_umap(df, target_column):
     st.plotly_chart(fig, use_container_width=True)
 
 
+@st.cache_data
 def generate_3d_tsne(df, target_column):
     """
     Function to generate a 3D TSNE plot, with the target column.
@@ -173,6 +179,7 @@ def generate_3d_tsne(df, target_column):
     st.plotly_chart(fig, use_container_width=True)
 
 
+@st.cache_data
 def generate_3d_umap(df, target_column):
     """
     Function to generate a 3D UMAP plot, with the target column.
