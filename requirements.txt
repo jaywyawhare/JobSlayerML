@@ -11,3 +11,6 @@ catboost
 lightgbm
 umap-learn
 category-encoders
+coverage
+pytest
+inspect
