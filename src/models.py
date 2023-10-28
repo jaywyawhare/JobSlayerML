@@ -133,10 +133,7 @@ def featureExtraction(X_train, X_test, slider):
     Returns:
         The training and testing data with the top k components.
     """
-    if X_train.isnan().any():
-        X_train = X_train.fillna(X_train.mean())
-    if X_test.isnan().any():
-        X_test = X_test.fillna(X_test.mean())
+    X_train.fillna(mean, inplace=True)
     scalar = StandardScaler()
     X_train = scalar.fit_transform(X_train)
     X_test = scalar.transform(X_test)
