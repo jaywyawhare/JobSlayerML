@@ -1,4 +1,15 @@
-# JobSlayerML: Because Engineers Shouldn't Settle for Job Security!
+# JobSlayerML: Because Engineers Shouldn't Settle for Job Security! 
+
+<div align="center">
+  <a href="https://coveralls.io/github/jaywyawhare/JobSlayerML">
+    <img src="https://coveralls.io/repos/github/jaywyawhare/JobSlayerML/badge.svg" alt="Coverage Status">
+  </a>
+  &nbsp; &nbsp; <!-- Add non-breaking spaces for spacing -->
+  <a href="https://jobslayerml.streamlit.app">
+    <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Streamlit App">
+  </a>
+</div>
+
 
 Welcome to JobSlayerML, a fun and tongue-in-cheek automated machine learning tool created by a engineer who believe in pushing the boundaries of technology, even if it means potentially "slaying" my own job!
 
