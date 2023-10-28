@@ -1,4 +1,4 @@
-# JobSlayerML: Because Engineers Shouldn't Settle for Job Security! 
+# JobSlayerML: Because Engineers Shouldn't Settle for Job Security!
 
 <div align="center">
   <a href="https://coveralls.io/github/jaywyawhare/JobSlayerML">
@@ -9,7 +9,6 @@
     <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Streamlit App">
   </a>
 </div>
-
 
 Welcome to JobSlayerML, a fun and tongue-in-cheek automated machine learning tool created by a engineer who believe in pushing the boundaries of technology, even if it means potentially "slaying" my own job!
 
@@ -29,23 +28,24 @@ JobSlayerML is a Streamlit-based application designed to make machine learning m
 ## Getting Started <a name="getting-started"></a>
 
 To get started with JobSlayerML, follow these simple steps:
+
 1. Clone the GitHub repository:
 
-    ```bash
-    git clone https://github.com/jaywyawhare/JobSlayerML.git
-    ```
+   ```bash
+   git clone https://github.com/jaywyawhare/JobSlayerML.git
+   ```
 
 1. Install the necessary libraries by running:
-    
-    ```bash
-    pip install -r requirements.txt
-    ```
 
-1. Run the Streamlit app using 
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-    ```bash
-    streamlit run app.py
-    ```
+1. Run the Streamlit app using
+
+   ```bash
+   streamlit run app.py
+   ```
 
 1. Access the application locally at [http://localhost:8501](http://localhost:8501) in your browser or on streamlit sharing at [JobSlayerML](https://jobslayerml.streamlit.app).
 
@@ -67,6 +67,7 @@ JobSlayerML is designed to simplify the process of machine learning model select
 Contributions to JobSlayerML are welcome! If you have suggestions for improvements or new features, please feel free to open an issue or submit a pull request on the GitHub repository.
 
 Scope for improvement:
+
 - Add feature engineering options.
 - Adding hyperparameter tuning options.
 - Adding prediction options.
@@ -75,11 +76,10 @@ Scope for improvement:
 - Adding support for natural language processing.
 - Adding support for image processing.
 
-
 **GitHub Repository**: [JobSlayerML on GitHub](https://github.com/jaywyawhare/JobSlayerML)
 
 ## License <a name="license"></a>
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENCE.md) file for details.
 
-Enjoy using JobSlayerML, and remember, its AGI is closer than you think! 
+Enjoy using JobSlayerML, and remember, its AGI is closer than you think!
