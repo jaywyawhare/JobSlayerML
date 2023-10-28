@@ -1,9 +1,9 @@
 from src import *
 from src.models import (
-    models, 
-    eval, 
-    training, 
-    )
+    models,
+    eval,
+    training,
+)
 from src.plot_generator import (
     generate_regression_plot,
     generate_confusion_matrix,
@@ -30,6 +30,7 @@ import numpy as np
 
 
 st.set_page_config(layout="wide")
+
 
 def main():
     global submit_clicked
@@ -61,7 +62,7 @@ def main():
         fillna_checkbox = st.sidebar.checkbox("Fill NaN")
         if df.isnull().values.any() and fillna_checkbox is False:
             st.sidebar.error("The dataset contains NaN values, please fill them")
-        
+
         if fillna_checkbox:
             fillna_option = st.sidebar.selectbox(
                 "Select the fill NaN option",
@@ -117,9 +118,11 @@ def main():
             )
             test_size = 0.01
             random_state = 42
-            
+
         if train_test_split_checkbox:
-            test_size = st.sidebar.slider("Select the percentage of test data", 0.01, 0.99, 0.20, 0.01)
+            test_size = st.sidebar.slider(
+                "Select the percentage of test data", 0.01, 0.99, 0.20, 0.01
+            )
             random_state = st.sidebar.slider("Select the random state", 0, 100, 42, 1)
 
         model_type = st.sidebar.radio(
@@ -313,65 +316,6 @@ def main():
 
     else:
         st.sidebar.warning("Please upload a CSV file")
-        fill_value = 0
-
-    df.fillna(fill_value, inplace=True)
-
-    target_column = st.sidebar.selectbox("Select the Target Column:", df.columns)
-
-    X = df.drop(columns=[target_column])
-    y = df[target_column]
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-
-    st.sidebar.header("Choose a Model")
-    model_selector = st.sidebar.selectbox(
-        "Select a model:",
-        sorted(
-            [
-                name
-                for name, _ in all_estimators(
-                    type_filter=["regressor" if task == "Regression" else "classifier"]
-                )
-            ]
-        ),
-    )
-
-    if st.sidebar.button("Submit"):
-        submit_clicked = True
-
-        selected_model = [
-            est
-            for name, est in all_estimators(
-                type_filter=["regressor" if task == "Regression" else "classifier"]
-            )
-            if name == model_selector
-        ][0]
-
-        if task == "Regression":
-            st.header("Regression Task")
-            st.write(f"Selected Model: {model_selector}")
-
-            model, mse, mae, r2 = perform_regression(
-                X_train, y_train, X_test, y_test, selected_model
-            )
-            st.write(f"Mean Squared Error: {mse}")
-            st.write(f"Mean Absolute Error: {mae}")
-            st.write(f"R-squared (R2): {r2}")
-
-        elif task == "Classification":
-            st.header("Classification Task")
-            st.write(f"Selected Model: {model_selector}")
-
-            model, accuracy, roc_auc, f1, recall = perform_classification(
-                X_train, y_train, X_test, y_test, selected_model
-            )
-            st.write(f"Accuracy: {accuracy}")
-            st.write(f"ROC AUC: {roc_auc}")
-            st.write(f"F1 Score: {f1}")
-            st.write(f"Recall: {recall}")
 
 
 if __name__ == "__main__":
