@@ -4,7 +4,7 @@
   <a href="https://coveralls.io/github/jaywyawhare/JobSlayerML">
     <img src="https://coveralls.io/repos/github/jaywyawhare/JobSlayerML/badge.svg" alt="Coverage Status">
   </a>
-  &nbsp; &nbsp; <!-- Add non-breaking spaces for spacing -->
+  &nbsp; &nbsp; 
   <a href="https://jobslayerml.streamlit.app">
     <img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" alt="Streamlit App">
   </a>
