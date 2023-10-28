@@ -65,7 +65,7 @@ def main():
         if fillna_checkbox:
             fillna_option = st.sidebar.selectbox(
                 "Select the fill NaN option",
-                ["Mean", "Median", "Mode", "0"],
+                ["Mean", "Mode", "0"],
             )
 
         exploratory_data_analysis_checkbox = st.sidebar.checkbox(
