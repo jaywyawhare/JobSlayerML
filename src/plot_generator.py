@@ -22,6 +22,7 @@ def generate_heatmap(df):
     Returns:
         None
     """
+    df.fillna(0, inplace=True)
     corr = df.corr()
     fig = ff.create_annotated_heatmap(
         z=corr.values,
@@ -46,6 +47,7 @@ def generate_distribution_plot(df):
     Returns:
         None
     """
+    df.fillna(0, inplace=True)
     numeric_cols = [col for col in df.columns if df[col].dtype != "object"]
     n = len(numeric_cols) // 4 + 1
     fig = make_subplots(rows=4, cols=n)
@@ -109,6 +111,7 @@ def generate_2d_tsne(df, target_column):
     Returns:
         None
     """
+    df.fillna(0, inplace=True)
     scaler = StandardScaler()
     df_std = scaler.fit_transform(df)
 
@@ -136,6 +139,7 @@ def generate_2d_umap(df, target_column):
     Returns:
         None
     """
+    df.fillna(0, inplace=True)
     scaler = StandardScaler()
     df_std = scaler.fit_transform(df)
 
@@ -163,6 +167,7 @@ def generate_3d_tsne(df, target_column):
     Returns:
         None
     """
+    df.fillna(0, inplace=True)
     scaler = StandardScaler()
     df_std = scaler.fit_transform(df)
 
@@ -191,6 +196,7 @@ def generate_3d_umap(df, target_column):
     Returns:
         None
     """
+    df.fillna(0, inplace=True)
     scaler = StandardScaler()
     df_std = scaler.fit_transform(df)
 
