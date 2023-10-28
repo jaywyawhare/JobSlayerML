@@ -26,6 +26,7 @@ from src.preprocessing import (
 
 import pandas as pd
 import streamlit as st
+import numpy as np
 
 
 st.set_page_config(layout="wide")
@@ -58,14 +59,19 @@ def main():
             )
 
         fillna_checkbox = st.sidebar.checkbox("Fill NaN")
+        if df.isnull().values.any() and fillna_checkbox is False:
+            st.sidebar.error("The dataset contains NaN values, please fill them")
+        
         if fillna_checkbox:
             fillna_option = st.sidebar.selectbox(
-                "Select the fillna option", ["Mean", "Mode", "0"]
+                "Select the fill NaN option",
+                ["Mean", "Median", "Mode", "0"],
             )
 
         exploratory_data_analysis_checkbox = st.sidebar.checkbox(
             "Exploratory Data Analysis"
         )
+        slider = None
         if exploratory_data_analysis_checkbox:
             slider = st.sidebar.slider(
                 "Select the number of components to keep", 1, len(df.columns), 1, 1
@@ -80,9 +86,19 @@ def main():
             encoding_option = st.sidebar.selectbox(
                 "Select the encoding option", ["Label Encoding", "One-Hot Encoding"]
             )
-            encoding_columns = st.sidebar.multiselect(
-                "Select the columns to encode", df.columns
-            )
+            if encoding_option == "Label Encoding":
+                encoding_columns = st.sidebar.multiselect(
+                    "Select the columns to encode", df.columns
+                )
+            elif encoding_option == "One-Hot Encoding":
+                encoding_columns = st.sidebar.multiselect(
+                    "Select the columns to encode", df.columns
+                )
+                if target_column in encoding_columns:
+                    st.sidebar.error(
+                        "The target column cannot be selected for One-Hot Encoding"
+                    )
+                    return None
 
         scale_checkbox = st.sidebar.checkbox("Scaling Data")
         if scale_checkbox:
@@ -95,8 +111,15 @@ def main():
             )
 
         train_test_split_checkbox = st.sidebar.checkbox("Train Test Split")
+        if train_test_split_checkbox is False:
+            st.sidebar.warning(
+                "Please note that the model will be trained on the entire dataset"
+            )
+            test_size = 0.01
+            random_state = 42
+            
         if train_test_split_checkbox:
-            test_size = st.sidebar.slider("Select the test size", 0.0, 1.0, 0.2, 0.05)
+            test_size = st.sidebar.slider("Select the percentage of test data", 0.01, 0.99, 0.20, 0.01)
             random_state = st.sidebar.slider("Select the random state", 0, 100, 42, 1)
 
         model_type = st.sidebar.radio(
@@ -205,6 +228,20 @@ def main():
 
         submit_clicked = st.sidebar.button("Submit")
 
+        if model_type == "Regression" and not np.issubdtype(
+            df[target_column].dtype, np.number
+        ):
+            st.sidebar.warning(
+                "The target column is not numerical. Please select a different column."
+            )
+
+        if model_type == "Classification" and np.issubdtype(
+            df[target_column].dtype, np.number
+        ):
+            st.sidebar.warning(
+                "The target column is numerical. Please categorically encode the target column."
+            )
+
         if not submit_clicked:
             return None
 
@@ -215,11 +252,13 @@ def main():
         if encode_checkbox:
             df = encode_categorical(df, encoding_option, encoding_columns)
         if scale_checkbox:
-            df, scaler = data_scaling(df, scaling_option, scaling_columns)
-        if train_test_split_checkbox:
-            X_train, X_test, y_train, y_test = train_test_validation_split(
-                df, target_column, test_size, random_state
-            )
+            df = data_scaling(df, scaling_option, scaling_columns)
+        X_train, X_test, y_train, y_test = train_test_validation_split(
+            df, target_column, test_size, random_state
+        )
+
+        if slider is None:
+            slider = X_train.shape[1]
 
         if model_selection_radio == "Comparative Analysis":
             model_selector = None
