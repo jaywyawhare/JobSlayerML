@@ -65,10 +65,9 @@ class TestFeatureExtraction:
         X_train = np.array([[1, 2], [3, 4]])
         X_test = np.array([[3, 4], [5, 6]])
         slider = 2
-        try:
-            featureExtraction(X_train, X_test, slider)
-        except (TypeError, ValueError):
-            pytest.fail("Valid input raised an unexpected exception.")
+        assert featureExtraction(X_train, X_test, slider)[0].shape[1] == slider
+        assert featureExtraction(X_train, X_test, slider)[1].shape[1] == slider
+
 
     def test_invalid_3rd_dimension(self):
         """
@@ -226,6 +225,36 @@ class TestTraining:
                 self.X_test, self.y_test, eval_metrics, comparison_metrics, slider
             )
 
+    def test_valid_slider_value(self):
+        """
+        Test with a valid slider value. It should not raise a ValueError.
+        """
+        model_type = "Regression"
+        model_selection_radio = "Comparative Analysis"
+        model_selector = None
+        eval_metrics = ["MSE"]
+        comparison_metrics = "MSE"
+        slider = 1
+        training(
+            model_type, model_selection_radio, model_selector, self.X_train, self.y_train,
+            self.X_test, self.y_test, eval_metrics, comparison_metrics, slider
+        )
+
+    def test_single_model_selection(self):
+        """
+        Test with single model selection. It should not raise a ValueError.
+        """
+        model_type = "Regression"
+        model_selection_radio = "Individual Model Selection"
+        model_selector = "LinearRegression"
+        eval_metrics = ["MSE"]
+        comparison_metrics = "MSE"
+        slider = None
+        training(
+            model_type, model_selection_radio, model_selector, self.X_train, self.y_train,
+            self.X_test, self.y_test, eval_metrics, comparison_metrics, slider
+        )
+
 # Test class for positional argument
 class TestPositionalArgument:
     """
@@ -242,3 +271,4 @@ class TestPositionalArgument:
         """
         assert requiresPositionalArgument(LinearRegression) == False
         assert requiresPositionalArgument(OneVsRestClassifier) == True
+
