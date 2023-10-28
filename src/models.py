@@ -26,10 +26,11 @@ from sklearn.metrics import (
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
+import numpy as np
 
 
 def models(model_type):
-    """ 
+    """
     Function to return all the models for the specified model type.
 
     Args:
@@ -116,9 +117,11 @@ def eval(X_train, y_train, X_test, y_test, model, eval_metrics):
             if metric in metric_functions:
                 score = metric_functions[metric](y_test, y_pred)
                 evaluation_results[metric] = score
+            else:
+                raise ValueError("Invalid metric")
         return y_pred, evaluation_results
     except:
-        pass
+        raise ValueError("Invalid parameters")
 
 
 def featureExtraction(X_train, X_test, slider):
@@ -133,7 +136,14 @@ def featureExtraction(X_train, X_test, slider):
     Returns:
         The training and testing data with the top k components.
     """
-    X_train.fillna(mean, inplace=True)
+
+    mean_value_train = np.nanmean(X_train)
+    mean_value_test = np.nanmean(X_test)
+    nan_indices_train = np.isnan(X_train)
+    nan_indices_test = np.isnan(X_test)
+    X_train[nan_indices_train] = mean_value_train
+    X_test[nan_indices_test] = mean_value_test
+
     scalar = StandardScaler()
     X_train = scalar.fit_transform(X_train)
     X_test = scalar.transform(X_test)
@@ -164,7 +174,7 @@ def training(
         model_type : The type of model to train. (Regression or Classification)
         model_selection_radio: The type of model selection to use. (Comparative Analysis or Individual Model Selection)
         model_selector: The model to train. (Only used for Individual Model Selection)
-        X_train: The training data. 
+        X_train: The training data.
         y_train: The training target.
         X_test: The testing data.
         y_test: The testing target.
@@ -176,8 +186,14 @@ def training(
         The predictions from the model.
 
     """
-    if slider is not None:
+
+    if slider is not None and slider > 0 and slider <= X_train.shape[1]:
         X_train, X_test = featureExtraction(X_train, X_test, slider)
+    elif slider is None:
+        pass
+    else:
+        raise ValueError("Invalid slider value")
+
     if model_selection_radio == "Comparative Analysis":
         st.header("Comparative Analysis")
         comparison_results = {}
@@ -235,15 +251,16 @@ def requiresPositionalArgument(model_class):
         model_class: The scikit-learn estimator class.
 
     Returns:
-        A list of required positional arguments, or an empty list if none are required.
+        A boolean indicating whether the model class requires positional arguments.
     """
-    required_args = []
+    is_positional = False
     try:
         constructor = signature(model_class)
         parameters = constructor.parameters
         for arg_name, arg_info in parameters.items():
             if arg_info.default == arg_info.empty:
-                required_args.append(arg_name)
+                is_positional = True
     except Exception:
         pass
-    return required_args
+
+    return is_positional
