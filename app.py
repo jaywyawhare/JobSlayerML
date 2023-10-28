@@ -1,9 +1,9 @@
 from src import *
 from src.models import (
-    models,
-    eval,
-    training,
-)
+    models, 
+    eval, 
+    training, 
+    )
 from src.plot_generator import (
     generate_regression_plot,
     generate_confusion_matrix,
@@ -30,7 +30,6 @@ import numpy as np
 
 
 st.set_page_config(layout="wide")
-
 
 def main():
     global submit_clicked
@@ -62,11 +61,11 @@ def main():
         fillna_checkbox = st.sidebar.checkbox("Fill NaN")
         if df.isnull().values.any() and fillna_checkbox is False:
             st.sidebar.error("The dataset contains NaN values, please fill them")
-
+        
         if fillna_checkbox:
             fillna_option = st.sidebar.selectbox(
                 "Select the fill NaN option",
-                ["Mean", "Mode", "0"],
+                ["Mean", "Median", "Mode", "0"],
             )
 
         exploratory_data_analysis_checkbox = st.sidebar.checkbox(
@@ -118,11 +117,9 @@ def main():
             )
             test_size = 0.01
             random_state = 42
-
+            
         if train_test_split_checkbox:
-            test_size = st.sidebar.slider(
-                "Select the percentage of test data", 0.01, 0.99, 0.20, 0.01
-            )
+            test_size = st.sidebar.slider("Select the percentage of test data", 0.01, 0.99, 0.20, 0.01)
             random_state = st.sidebar.slider("Select the random state", 0, 100, 42, 1)
 
         model_type = st.sidebar.radio(
