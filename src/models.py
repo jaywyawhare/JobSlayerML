@@ -121,20 +121,22 @@ def eval(X_train, y_train, X_test, y_test, model, eval_metrics):
         pass
 
 
-def pca(X_train, X_test, y_train, y_test, slider):
+def featureExtraction(X_train, X_test, slider):
     """
     Function to perform PCA and return the top k components.
 
     Args:
         X_train: The training data.
         X_test: The testing data.
-        y_train: The training target.
-        y_test: The testing target.
         slider: The number of components to use for PCA.
 
     Returns:
         The training and testing data with the top k components.
     """
+    if X_train.isnan().any():
+        X_train = X_train.fillna(X_train.mean())
+    if X_test.isnan().any():
+        X_test = X_test.fillna(X_test.mean())
     scalar = StandardScaler()
     X_train = scalar.fit_transform(X_train)
     X_test = scalar.transform(X_test)
@@ -178,7 +180,7 @@ def training(
 
     """
     if slider is not None:
-        X_train, X_test = pca(X_train, X_test, y_train, y_test, slider)
+        X_train, X_test = featureExtraction(X_train, X_test, slider)
     if model_selection_radio == "Comparative Analysis":
         st.header("Comparative Analysis")
         comparison_results = {}

@@ -67,6 +67,8 @@ def generate_pca_plot(df, target_column):
     Returns:
         None
     """
+
+    df.fillna(0, inplace=True)
     scaler = StandardScaler()
     df_std = scaler.fit_transform(df)
 
