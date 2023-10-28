@@ -4,9 +4,11 @@ from sklearn.preprocessing import (
     RobustScaler,
     Normalizer,
     LabelEncoder,
+    OneHotEncoder,
 )
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import streamlit as st
 
 
 def drop_columns(df, columns_to_drop):
@@ -45,6 +47,8 @@ def fill_nan(df, fillna_option):
         df = df.fillna(df.mode())
     elif fillna_option == "0":
         df = df.fillna(0)
+    else:
+        raise ValueError("Invalid option for filling NaN values.")
     return df
 
 
@@ -65,9 +69,14 @@ def encode_categorical(df, encoding_option, encoding_columns):
         le = LabelEncoder()
         df[encoding_columns] = df[encoding_columns].apply(le.fit_transform)
     elif encoding_option == "One-Hot Encoding":
-        oneHot = pd.get_dummies(df[encoding_columns])
-        df = pd.concat([df, oneHot], axis=1)
-        df = df.drop(columns=encoding_columns, axis=1)
+        df[encoding_columns] = df[encoding_columns].astype(str)
+        encoder = OneHotEncoder()
+        one_hot = encoder.fit_transform(df[[encoding_columns]])
+        one_hot_df = pd.DataFrame.sparse.from_spmatrix(one_hot, columns=encoder.get_feature_names_out([encoding_columns]))
+        df = pd.concat([df, one_hot_df], axis=1)
+        df = df.drop(columns=[encoding_columns])
+    else:
+        raise ValueError("Invalid option for encoding categorical columns.")
     return df
 
 
@@ -96,7 +105,9 @@ def data_scaling(df, scaling_option, scaling_columns):
     elif scaling_option == "Normalizer":
         scaler = Normalizer()
         df[scaling_columns] = scaler.fit_transform(df[scaling_columns])
-    return df, scaler
+    else:
+        raise ValueError("Invalid option for scaling data.")
+    return df
 
 
 def train_test_validation_split(df, target_column, test_size, random_state):
