@@ -52,14 +52,15 @@ class TestFillNaN:
     def setup_method(self):
         # Setup the dataframe and fillna option
         self.df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
-        self.fillna_option = "Mean"
+        self.fillna_option = ["Mean", "Mode", "0"]
 
     def test_fill_nan_valid(self):
         """
         Test `fill_nan` with valid option.
         """
-        df = fill_nan(self.df, self.fillna_option)
-        assert df.shape == (3, 2)
+        for option in self.fillna_option:
+            df = fill_nan(self.df, option)
+            assert df.shape == (3, 2)
 
     def test_fill_nan_invalid(self):
         """

@@ -254,13 +254,10 @@ def requiresPositionalArgument(model_class):
         A boolean indicating whether the model class requires positional arguments.
     """
     is_positional = False
-    try:
-        constructor = signature(model_class)
-        parameters = constructor.parameters
-        for arg_name, arg_info in parameters.items():
-            if arg_info.default == arg_info.empty:
-                is_positional = True
-    except Exception:
-        pass
+    constructor = signature(model_class)
+    parameters = constructor.parameters
+    for arg_name, arg_info in parameters.items():
+        if arg_info.default == arg_info.empty:
+            is_positional = True
 
     return is_positional
