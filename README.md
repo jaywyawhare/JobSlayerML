@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="logo.png" alt="JobSlayerML Logo" width="200"/>
+</div>
+
 # JobSlayerML: Because Engineers Shouldn't Settle for Job Security!
 
 <div align="center">
